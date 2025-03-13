@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>跳动爱心 + 文字输出</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* 文字在上 */
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffe6f2;
+            overflow: hidden; /* 防止小爱心溢出页面 */
+            font-family: Arial, sans-serif;
+        }
+
+        /* 文字容器样式 */
+        .text-container {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 24px;
+            color: #333;
+        }
+
+        /* 大爱心样式 */
+        .heart {
+            position: absolute;
+            bottom: 20px; /* 爱心放在页面底部 */
+            width: 200px;
+            height: 180px;
+            animation: heartbeat 1s infinite;
+        }
+
+        .heart:before,
+        .heart:after {
+            position: absolute;
+            content: "";
+            left: 100px;
+            top: 0;
+            width: 100px;
+            height: 160px;
+            background: pink;
+            border-radius: 100px 100px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+
+        .heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        /* 大爱心跳动动画 */
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* 小爱心样式 */
+        .small-heart {
+            position: absolute;
+            width: 20px;
+            height: 18px;
+            background: red;
+            border-radius: 50%;
+            animation: float-up 2s infinite;
+	    bottom: 0; /* 从页面底部开始 */
+        }
+
+        .small-heart:before,
+        .small-heart:after {
+            position: absolute;
+            content: "";
+            left: 10px;
+            top: 0;
+            width: 10px;
+            height: 16px;
+            background: red;
+            border-radius: 10px 10px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+
+        .small-heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        /* 小爱心浮动动画 */
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 文字容器 -->
+    <div class="text-container">
+        <p id="line1"></p>
+        <p id="line2"></p>
+        <p id="line3"></p>
+    </div>
+
+    <!-- 大爱心 -->
+    <div class="heart"></div>
+
+    <!-- 动态生成小爱心 -->
+    <script>
+        // 文字逐行显示
+        const line1 = document.getElementById("line1");
+        const line2 = document.getElementById("line2");
+        const line3 = document.getElementById("line3");
+
+        const text1 = "你好，世界！";
+        const text2 = "这是一个跳动的爱心动画。";
+        const text3 = "希望你喜欢！";
+
+        let index1 = 0, index2 = 0, index3 = 0;
+
+        function typeWriter() {
+            if (index1 < text1.length) {
+                line1.textContent += text1.charAt(index1);
+                index1++;
+            } else if (index2 < text2.length) {
+                line2.textContent += text2.charAt(index2);
+                index2++;
+            } else if (index3 < text3.length) {
+                line3.textContent += text3.charAt(index3);
+                index3++;
+            } else {
+                clearInterval(typingInterval); // 停止打字效果
+            }
+        }
+
+        const typingInterval = setInterval(typeWriter, 100); // 每100毫秒输出一个字
+
+        // 动态生成小爱心
+        function createSmallHeart() {
+            const smallHeart = document.createElement("div");
+            smallHeart.className = "small-heart";
+            smallHeart.style.left = `${Math.random() * 100}%`; // 随机水平位置
+            smallHeart.style.animationDuration = `${Math.random() * 2 + 2}s`; // 随机动画速度
+            document.body.appendChild(smallHeart);
+
+            // 动画结束后移除小爱心
+            setTimeout(() => {
+                smallHeart.remove();
+            }, 2000);
+        }
+
+        // 每隔300毫秒创建一个小爱心
+        setInterval(createSmallHeart, 300);
+    </script>
+</body>
+</html>

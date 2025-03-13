@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>按钮操作示例</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffcccb; /* 粉色背景 */
+        }
+
+        .image-container {
+            margin-bottom: 20px; /* 图片与文字之间的间距 */
+        }
+
+        .image-container img {
+            width: 150px; /* 图片宽度 */
+            height: auto; /* 高度自适应 */
+            border-radius: 10px; /* 图片圆角 */
+        }
+
+        .message {
+            margin-bottom: 40px; /* 文字与按钮之间的间距 */
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+        }
+
+        .button-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 30px; /* 按钮位置下移 */
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        #leftButton {
+            background-color: #4CAF50;
+            color: white;
+            margin-right: 40px; /* 左边按钮和右边按钮之间的间距 */
+        }
+
+        #rightButton {
+            background-color: #008CBA;
+            color: white;
+            transform: scale(1);
+        }
+
+        /* 左边按钮被挤出屏幕的样式 */
+        .left-button-hidden {
+            margin-left: -100%; /* 将左边按钮移出屏幕 */
+            opacity: 0; /* 让左边按钮消失 */
+            pointer-events: none; /* 禁用左边按钮的点击事件 */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 图片 -->
+    <div class="image-container">
+        <img src="https://via.placeholder.com/150" alt="示例图片">
+    </div>
+
+    <!-- 文字提示 -->
+    <div class="message">点击左边按钮六次，右边按钮会变大并将左边按钮挤出屏幕！</div>
+
+    <!-- 按钮 -->
+    <div class="button-container">
+        <button id="leftButton">点击我</button>
+        <button id="rightButton" onclick="window.location.href='https://www.example.com'">跳转按钮</button>
+    </div>
+
+    <script>
+        // 获取左边按钮和右边按钮的引用
+        const leftButton = document.getElementById('leftButton');
+        const rightButton = document.getElementById('rightButton');
+
+        let clickCount = 0; // 记录点击次数
+
+        // 为左边按钮添加点击事件
+        leftButton.addEventListener('click', function() {
+            clickCount++; // 点击次数加1
+
+            // 根据点击次数调整右边按钮的大小
+            const scaleValue = 1 + (clickCount * 0.4); // 每次点击放大20%
+            rightButton.style.transform = `scale(${scaleValue})`;
+
+            // 如果点击次数达到7次，将左边按钮挤出屏幕
+            if (clickCount >= 7) {
+                leftButton.classList.add('left-button-hidden'); // 添加隐藏样式
+            }
+        });
+    </script>
+
+</body>
+</html>
