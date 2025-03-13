@@ -7,7 +7,7 @@
         body {
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* 文字在上 */
+            justify-content: flex-start; /* 内容从上到下排列 */
             align-items: center;
             height: 100vh;
             margin: 0;
@@ -16,18 +16,18 @@
             font-family: Arial, sans-serif;
         }
 
-        /* 文字容器样式 */
-        .text-container {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 24px;
-            color: #333;
+        /* 爱心容器样式 */
+        .hearts-container {
+            display: flex;
+            justify-content: space-between; /* 左右分布 */
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         /* 大爱心样式 */
         .heart {
-            position: absolute;
-            bottom: 20px; /* 爱心放在页面底部 */
+            position: relative;
             width: 200px;
             height: 180px;
             animation: heartbeat 1s infinite;
@@ -53,16 +53,6 @@
             transform-origin: 100% 100%;
         }
 
-        /* 左侧爱心 */
-        .heart.left {
-            left: 20px; /* 左侧距离 */
-        }
-
-        /* 右侧爱心 */
-        .heart.right {
-            right: 20px; /* 右侧距离 */
-        }
-
         /* 大爱心跳动动画 */
         @keyframes heartbeat {
             0% {
@@ -74,6 +64,14 @@
             100% {
                 transform: scale(1);
             }
+        }
+
+        /* 文字容器样式 */
+        .text-container {
+            margin-top: 20px; /* 文字往下移 */
+            text-align: center;
+            font-size: 24px;
+            color: #333;
         }
 
         /* 小爱心样式 */
@@ -121,6 +119,14 @@
     </style>
 </head>
 <body>
+    <!-- 爱心容器 -->
+    <div class="hearts-container">
+        <!-- 左侧爱心 -->
+        <div class="heart left"></div>
+        <!-- 右侧爱心 -->
+        <div class="heart right"></div>
+    </div>
+
     <!-- 文字容器 -->
     <div class="text-container">
         <p id="line1"></p>
@@ -143,17 +149,11 @@
         <p id="line18"></p>
     </div>
 
-    <!-- 左侧爱心 -->
-    <div class="heart left"></div>
-
-    <!-- 右侧爱心 -->
-    <div class="heart right"></div>
-
     <!-- 动态生成小爱心 -->
     <script>
         // 文字逐行显示
         const lines = [
-            "我最最亲爱的兔子精宝宝",
+            "我最最亲爱的兔子精宝宝：",
             "嘿，就知道你肯定也喜欢我的！我也喜欢你~(❁´◡`❁)，最最最最最最喜欢你了，也会一直一直喜欢你的！",
             "宝宝~只要跟你聊天，天天都好开心好开心啊！嘿嘿！",
             "我觉得你很好的！非常好！",
