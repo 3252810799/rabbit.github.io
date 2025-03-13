@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>宝宝~</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* 文字在上 */
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffe6f2;
+            overflow: hidden; /* 防止小爱心溢出页面 */
+            font-family: Arial, sans-serif;
+        }
+
+        /* 文字容器样式 */
+        .text-container {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 24px;
+            color: #333;
+        }
+
+        /* 大爱心样式 */
+        .heart {
+            position: absolute;
+            bottom: 20px; /* 爱心放在页面底部 */
+            width: 200px;
+            height: 180px;
+            animation: heartbeat 1s infinite;
+        }
+
+        .heart:before,
+        .heart:after {
+            position: absolute;
+            content: "";
+            left: 100px;
+            top: 0;
+            width: 100px;
+            height: 160px;
+            background: pink;
+            border-radius: 100px 100px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+
+        .heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        /* 左侧爱心 */
+        .heart.left {
+            left: 20px; /* 左侧距离 */
+        }
+
+        /* 右侧爱心 */
+        .heart.right {
+            right: 20px; /* 右侧距离 */
+        }
+
+        /* 大爱心跳动动画 */
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* 小爱心样式 */
+        .small-heart {
+            position: absolute;
+            width: 20px;
+            height: 18px;
+            background: red;
+            border-radius: 50%;
+            animation: float-up 2s infinite;
+            bottom: 0; /* 从页面底部开始 */
+        }
+
+        .small-heart:before,
+        .small-heart:after {
+            position: absolute;
+            content: "";
+            left: 10px;
+            top: 0;
+            width: 10px;
+            height: 16px;
+            background: red;
+            border-radius: 10px 10px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+
+        .small-heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        /* 小爱心浮动动画 */
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 文字容器 -->
+    <div class="text-container">
+        <p id="line1"></p>
+        <p id="line2"></p>
+        <p id="line3"></p>
+        <p id="line4"></p>
+        <p id="line5"></p>
+        <p id="line6"></p>
+        <p id="line7"></p>
+        <p id="line8"></p>
+        <p id="line9"></p>
+        <p id="line10"></p>
+        <p id="line11"></p>
+        <p id="line12"></p>
+        <p id="line13"></p>
+        <p id="line14"></p>
+        <p id="line15"></p>
+        <p id="line16"></p>
+        <p id="line17"></p>
+        <p id="line18"></p>
+    </div>
+
+    <!-- 左侧爱心 -->
+    <div class="heart left"></div>
+
+    <!-- 右侧爱心 -->
+    <div class="heart right"></div>
+
+    <!-- 动态生成小爱心 -->
+    <script>
+        // 文字逐行显示
+        const lines = [
+            "我最最亲爱的兔子精宝宝",
+            "嘿，就知道你肯定也喜欢我的！我也喜欢你~(❁´◡`❁)，最最最最最最喜欢你了，也会一直一直喜欢你的！",
+            "宝宝~只要跟你聊天，天天都好开心好开心啊！嘿嘿！",
+            "我觉得你很好的！非常好！",
+            "想牵着你的手，抱着你，嗯……亲亲你！嘿嘿！可不要觉得我是流氓！好吧，好像是有点！但是就是想！是流氓也想！",
+            "有事的话要跟我说的，我一直都在，不要自己一个人偷偷的不开心，你不开心我也感觉好难过的，不想要你不开心，我觉得我们兔子精就应该像太阳那样的！",
+            "其实我也好想好想听听你的声音，看看你的样子，感受你的温度，不过没事！我会等你准备好的！",
+            "不过我不想等好久好久，昨天看见你那样真的想从屏幕里钻到你的家里，抱着你，告诉你，我一直都在，一直都喜欢你，真的真的！",
+            "我的脑子好像真的好容易想乱七八糟的，你要是有什么事可以跟我说的。",
+            "其实我的占有欲很强！想知道你的一切，你的所有。",
+            "哎呀，我可没有凑字数，真的！",
+            "我最喜欢兔子精了！也会一直喜欢兔子精！",
+            "宝宝~女朋友~老婆~",
+            "嘿嘿！Q(≧▽≦q)",
+            "你最最亲爱的一枝花宝宝~"
+        ];
+
+        let currentLine = 0;
+        let currentChar = 0;
+
+        function typeWriter() {
+            if (currentLine < lines.length) {
+                const lineElement = document.getElementById(`line${currentLine + 1}`);
+                if (currentChar < lines[currentLine].length) {
+                    lineElement.textContent += lines[currentLine].charAt(currentChar);
+                    currentChar++;
+                } else {
+                    currentLine++;
+                    currentChar = 0;
+                }
+            } else {
+                clearInterval(typingInterval); // 停止打字效果
+            }
+        }
+
+        const typingInterval = setInterval(typeWriter, 100); // 每100毫秒输出一个字
+
+        // 动态生成小爱心
+        function createSmallHeart() {
+            const smallHeart = document.createElement("div");
+            smallHeart.className = "small-heart";
+            smallHeart.style.left = `${Math.random() * 100}%`; // 随机水平位置
+            smallHeart.style.animationDuration = `${Math.random() * 2 + 2}s`; // 随机动画速度
+            document.body.appendChild(smallHeart);
+
+            // 动画结束后移除小爱心
+            setTimeout(() => {
+                smallHeart.remove();
+            }, 2000);
+        }
+
+        // 每隔300毫秒创建一个小爱心
+        setInterval(createSmallHeart, 300);
+    </script>
+</body>
+</html>
