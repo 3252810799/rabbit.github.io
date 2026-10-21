@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>爱心表白</title>
+<style>
+  body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#1a1a2e;
+    overflow:hidden;
+    font-family:'PingFang SC','Microsoft YaHei',sans-serif;
+  }
+  .heart{
+    position:relative;
+    width:120px;
+    height:120px;
+    background:#ff6b9d;
+    transform:rotate(45deg);
+    animation:beat 1.2s ease-in-out infinite;
+    box-shadow:0 0 50px rgba(255,107,157,0.5);
+    cursor:pointer;
+    transition:opacity 0.6s, transform 0.6s;
+    z-index:10;
+  }
+  .heart::before,
+  .heart::after{
+    content:"";
+    position:absolute;
+    width:120px;
+    height:120px;
+    background:#ff6b9d;
+    border-radius:50%;
+  }
+  .heart::before{top:-60px;left:0;}
+  .heart::after{top:0;left:-60px;}
+  .heart.hide{
+    opacity:0;
+    transform:rotate(45deg) scale(0);
+    pointer-events:none;
+  }
+  @keyframes beat{
+    0%,100%{transform:rotate(45deg) scale(1);}
+    15%{transform:rotate(45deg) scale(1.18);}
+    30%{transform:rotate(45deg) scale(1);}
+    45%{transform:rotate(45deg) scale(1.12);}
+  }
+  .particle{
+    position:absolute;
+    width:14px;
+    height:14px;
+    background:#ff6b9d;
+    transform:rotate(45deg);
+    pointer-events:none;
+    opacity:1;
+  }
+  .particle::before,
+  .particle::after{
+    content:"";
+    position:absolute;
+    width:14px;
+    height:14px;
+    background:#ff6b9d;
+    border-radius:50%;
+  }
+  .particle::before{top:-7px;left:0;}
+  .particle::after{top:0;left:-7px;}
+  .love-text{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(0);
+    font-size:48px;
+    color:#ff6b9d;
+    font-weight:bold;
+    letter-spacing:8px;
+    text-shadow:0 0 30px rgba(255,107,157,0.8),0 0 60px rgba(255,107,157,0.4);
+    opacity:0;
+    pointer-events:none;
+    z-index:20;
+    transition:all 0.8s cubic-bezier(.2,.8,.3,1);
+  }
+  .love-text.show{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1);
+  }
+  #outlineSvg{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:15;
+  }
+  #outlineSvg path{
+    fill:none;
+    stroke:#ff6b9d;
+    stroke-width:2.5;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    filter:drop-shadow(0 0 6px rgba(255,107,157,0.6));
+  }
+</style>
+</head>
+<body>
+  <div class="heart" id="heart"></div>
+  <div class="love-text" id="loveText">我喜欢你</div>
+  <svg id="outlineSvg"><path id="heartPath" d=""/></svg>
+<script>
+const heart = document.getElementById('heart');
+const loveText = document.getElementById('loveText');
+const svg = document.getElementById('outlineSvg');
+const heartPath = document.getElementById('heartPath');
+let exploded = false;
+
+function makeHeart(x, y, size){
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.width = size + 'px';
+  p.style.height = size + 'px';
+  p.style.left = x + 'px';
+  p.style.top = y + 'px';
+  const half = size / 2;
+  const uid = 'p' + Date.now() + Math.random().toString(36).slice(2);
+  p.classList.add(uid);
+  const s = document.createElement('style');
+  s.textContent = '.'+uid+'::before{top:'+(-half)+'px!important;width:'+size+'px!important;height:'+size+'px!important;} .'+uid+'::after{left:'+(-half)+'px!important;width:'+size+'px!important;height:'+size+'px!important;}';
+  document.head.appendChild(s);
+  document.body.appendChild(p);
+  return p;
+}
+
+function heartPoint(t, scale, cx, cy){
+  const x = 16 * Math.pow(Math.sin(t), 3);
+  const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+  return { x: cx + x * scale, y: cy + y * scale };
+}
+
+function buildPathD(cx, cy, scale){
+  const totalPts = 200;
+  let d = '';
+  for (let i = 0; i <= totalPts; i++){
+    const t = (i / totalPts) * Math.PI * 2;
+    const pt = heartPoint(t, scale, cx, cy);
+    d += (i === 0 ? 'M' : 'L') + pt.x.toFixed(2) + ',' + pt.y.toFixed(2);
+  }
+  d += 'Z';
+  return d;
+}
+
+function explode(){
+  if(exploded) return;
+  exploded = true;
+  heart.classList.add('hide');
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
+
+  for (let i = 0; i < 100; i++){
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 200 + Math.random() * 400;
+    const tx = Math.cos(angle) * dist;
+    const ty = Math.sin(angle) * dist;
+    const size = 8 + Math.random() * 14;
+    const p = makeHeart(cx, cy, size);
+    p.animate([
+      {transform:'rotate(45deg) scale(1)', opacity:1},
+      {transform:'translate('+tx+'px,'+ty+'px) rotate(45deg) scale(0.2)', opacity:0}
+    ],{
+      duration:1000 + Math.random()*600,
+      easing:'cubic-bezier(.2,.8,.3,1)',
+      fill:'forwards'
+    });
+    setTimeout(()=>p.remove(), 1800);
+  }
+
+  setTimeout(() => {
+    loveText.classList.add('show');
+  }, 1200);
+
+  setTimeout(() => {
+    const scale = 14;
+    const d = buildPathD(cx, cy, scale);
+    heartPath.setAttribute('d', d);
+    const len = heartPath.getTotalLength();
+    heartPath.style.strokeDasharray = len;
+    heartPath.style.strokeDashoffset = len;
+    heartPath.style.transition = 'stroke-dashoffset 7s ease-in-out';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        heartPath.style.strokeDashoffset = '0';
+      });
+    });
+  }, 2200);
+}
+
+function resetPage(){
+  exploded = false;
+  heart.classList.remove('hide');
+  loveText.classList.remove('show');
+  heartPath.setAttribute('d','');
+  heartPath.style.transition = 'none';
+  heartPath.style.strokeDasharray = '';
+  heartPath.style.strokeDashoffset = '';
+  document.querySelectorAll('.particle').forEach(p=>p.remove());
+}
+
+heart.addEventListener('click', (e)=>{
+  e.stopPropagation();
+  explode();
+});
+
+document.body.addEventListener('click', ()=>{
+  if(exploded) resetPage();
+});
+</script>
+</body>
+</html>
