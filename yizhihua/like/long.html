@@ -56,6 +56,11 @@
             width: 100%;
             height: 100%;
             animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        .dragon-wrapper:active {
+            transform: scale(0.95);
         }
 
         @keyframes float {
@@ -75,6 +80,16 @@
         .mouth {
             animation: talk 0.4s infinite alternate;
         }
+
+        .hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #666;
+            font-size: 16px;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -82,68 +97,76 @@
 <div class="scene">
     <div class="bubble">主任！！</div>
 
-    <div class="dragon-wrapper">
+    <div class="dragon-wrapper" id="dragon" onclick="shoutChief()">
         <svg viewBox="0 0 900 500" width="900" height="500">
-            <!-- 龙身 - S形从右向左延伸 -->
             <path d="M 820 280 Q 720 180 620 260 Q 520 340 420 260 Q 320 180 240 260"
                   fill="none" stroke="#FFD700" stroke-width="55" stroke-linecap="round"/>
-
-            <!-- 龙腹 -->
             <path d="M 820 280 Q 720 180 620 260 Q 520 340 420 260 Q 320 180 240 260"
                   fill="none" stroke="#FFFACD" stroke-width="30" stroke-linecap="round" stroke-dasharray="12 6"/>
-
-            <!-- 龙鳞 -->
             <circle cx="720" cy="220" r="6" fill="#DAA520" opacity="0.6"/>
             <circle cx="620" cy="260" r="6" fill="#DAA520" opacity="0.6"/>
             <circle cx="520" cy="300" r="6" fill="#DAA520" opacity="0.6"/>
             <circle cx="420" cy="260" r="6" fill="#DAA520" opacity="0.6"/>
             <circle cx="320" cy="220" r="6" fill="#DAA520" opacity="0.6"/>
-
-            <!-- 背鳍 -->
             <path d="M 770 215 L 780 185 L 790 218" fill="#FFA500"/>
             <path d="M 670 205 L 680 175 L 690 208" fill="#FFA500"/>
             <path d="M 570 285 L 580 255 L 590 288" fill="#FFA500"/>
             <path d="M 470 295 L 480 265 L 490 298" fill="#FFA500"/>
             <path d="M 370 215 L 380 185 L 390 218" fill="#FFA500"/>
-
-            <!-- 龙爪 -->
             <path d="M 650 230 L 635 280 L 660 270 L 670 295" fill="none" stroke="#FFD700" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M 450 280 L 435 330 L 460 320 L 470 345" fill="none" stroke="#FFD700" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-
-            <!-- 龙尾 - 最右端 -->
             <path d="M 820 280 Q 850 260 860 240" fill="none" stroke="#FFD700" stroke-width="35" stroke-linecap="round"/>
             <path d="M 860 240 L 875 220 L 865 250 Z" fill="#FFA500"/>
-
-            <!-- 龙头 - 放在身体最左端，正对屏幕 -->
             <g transform="translate(160, 230)">
-                <!-- 头部 -->
                 <circle cx="0" cy="0" r="75" fill="#FFD700" stroke="#DAA520" stroke-width="2"/>
-
-                <!-- 眼睛 -->
                 <ellipse cx="-28" cy="-12" rx="16" ry="20" fill="white" stroke="#333" stroke-width="2"/>
                 <circle cx="-28" cy="-12" r="7" fill="black"/>
                 <ellipse cx="28" cy="-12" rx="16" ry="20" fill="white" stroke="#333" stroke-width="2"/>
                 <circle cx="28" cy="-12" r="7" fill="black"/>
-
-                <!-- 鼻子 -->
                 <ellipse cx="0" cy="18" rx="22" ry="14" fill="#FFA500"/>
                 <circle cx="-8" cy="18" r="3" fill="#8B4513"/>
                 <circle cx="8" cy="18" r="3" fill="#8B4513"/>
-
-                <!-- 嘴巴 -->
                 <ellipse class="mouth" cx="0" cy="52" rx="28" ry="5" fill="#8B0000" stroke="#333" stroke-width="2"/>
-
-                <!-- 龙角 -->
                 <path d="M -35 -55 L -55 -100 L -15 -65 Z" fill="#FF8C00"/>
                 <path d="M 35 -55 L 55 -100 L 15 -65 Z" fill="#FF8C00"/>
-
-                <!-- 龙须 -->
                 <path d="M -22 42 Q -55 65 -75 45" fill="none" stroke="#DAA520" stroke-width="3"/>
                 <path d="M 22 42 Q 55 65 75 45" fill="none" stroke="#DAA520" stroke-width="3"/>
             </g>
         </svg>
     </div>
+
+    <div class="hint">👆 点击龙听它喊主任</div>
 </div>
+
+<script>
+    function shoutChief() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance('主任！！');
+            utterance.lang = 'zh-CN';
+            utterance.rate = 0.6;       // 更慢，更有气势
+            utterance.pitch = 0.3;      // 更低沉
+            utterance.volume = 1;
+            
+            // 尝试选择一个更低沉的声音
+            const voices = window.speechSynthesis.getVoices();
+            const chineseVoice = voices.find(v => v.lang.includes('zh'));
+            if (chineseVoice) {
+                utterance.voice = chineseVoice;
+            }
+            
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert('你的浏览器不支持语音功能~');
+        }
+    }
+
+    // 预加载语音列表
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.getVoices();
+    }
+</script>
 
 </body>
 </html>
